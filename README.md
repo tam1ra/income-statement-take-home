@@ -43,9 +43,8 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:5173.
-
-> The page currently shows sample data. Connecting it to the backend is the next step.
+Open http://localhost:5173. The backend must be running: the dev server forwards
+`/income-statement` to http://localhost:8080.
 
 ## Run the tests
 
