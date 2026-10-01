@@ -10,3 +10,118 @@ main {
   margin: 0 auto;
   padding: 24px 16px;
 }
+
+h1 {
+  margin: 0 0 16px;
+  font-size: 1.5rem;
+}
+
+/* Date range form */
+
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #ccc;
+}
+
+.filter label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.875rem;
+  color: #444;
+}
+
+.filter input,
+.filter button {
+  font: inherit;
+  padding: 6px 10px;
+}
+
+.notice {
+  margin: 16px 0;
+  padding: 8px 12px;
+  background: #f3f3f3;
+  border-left: 3px solid #999;
+  font-size: 0.875rem;
+}
+
+/* Statement */
+
+.statement h2 {
+  margin: 24px 0 4px;
+  font-size: 1.25rem;
+}
+
+.period {
+  margin: 0 0 16px;
+  color: #444;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 6px 8px;
+  text-align: left;
+  font-weight: normal;
+}
+
+.amount {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.section-title th {
+  padding-top: 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  color: #444;
+}
+
+.line td:first-child {
+  padding-left: 24px;
+}
+
+.account-number {
+  display: inline-block;
+  width: 3.5em;
+  color: #666;
+  font-variant-numeric: tabular-nums;
+}
+
+.none {
+  color: #666;
+  font-style: italic;
+}
+
+.section-total th,
+.section-total td {
+  border-top: 1px solid #1a1a1a;
+  font-weight: 600;
+}
+
+.subtotal th,
+.subtotal td {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-top: 1px solid #1a1a1a;
+  border-bottom: 1px solid #1a1a1a;
+  background: #f3f3f3;
+  font-weight: 700;
+}
+
+.net-income th,
+.net-income td {
+  border-bottom: 3px double #1a1a1a;
+  font-size: 1.0625rem;
+}
