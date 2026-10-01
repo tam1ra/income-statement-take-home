@@ -2,5 +2,31 @@
 ### Start the backend first: ./mvnw spring-boot:run
 @host = http://localhost:8080
 
-### Hello: 200, "Hello from the backend."
-GET {{host}}/hello
+### Q1 2026: 200 with the statement
+GET {{host}}/income-statement?start=2026-01-01&end=2026-03-31
+
+### Single day: 200, start and end may be the same date
+GET {{host}}/income-statement?start=2026-03-31&end=2026-03-31
+
+### ---------- Invalid requests: each returns 400 with {"message": "..."} ----------
+
+### start missing
+GET {{host}}/income-statement?end=2026-03-31
+
+### end missing
+GET {{host}}/income-statement?start=2026-01-01
+
+### Both missing
+GET {{host}}/income-statement
+
+### Month 13
+GET {{host}}/income-statement?start=2026-13-01&end=2026-03-31
+
+### Day that does not exist
+GET {{host}}/income-statement?start=2026-02-30&end=2026-03-31
+
+### Wrong format
+GET {{host}}/income-statement?start=01/01/2026&end=2026-03-31
+
+### start after end
+GET {{host}}/income-statement?start=2026-03-31&end=2026-01-01
