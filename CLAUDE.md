@@ -21,10 +21,12 @@ What shapes every decision:
 This is the target shape. Create files when a step needs them, not before.
 
 ```text
-ledger.json     The data from the README, unmodified
 NOTES.md        Decisions, assumptions, Q1 2026 net income, how the numbers were checked
 backend/        Spring Boot, Java 21, Maven wrapper
                 controller → service → ledger loader, records for the ledger and the response
+  src/main/resources/ledger.json
+                The data from the README. Same content, journal entries sorted by date.
+                Code must not rely on that order.
 frontend/       React + Vite + TypeScript, npm
   src/
   ├── main.tsx              # Entry point
