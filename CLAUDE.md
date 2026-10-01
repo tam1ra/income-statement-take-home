@@ -45,6 +45,10 @@ Backend (from `backend/`):
 curl 'localhost:8080/income-statement?start=2026-01-01&end=2026-03-31'
 ```
 
+Hand-test requests for the VS Code REST Client extension live in
+`backend/src/test/http/request.http`. Keep it in step with the endpoint: add a request for
+each new case worth checking by hand.
+
 Frontend (from `frontend/`):
 
 ```sh
