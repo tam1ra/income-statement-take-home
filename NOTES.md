@@ -36,7 +36,7 @@
   API returns strings with 2 decimals. The frontend formats the text and does no arithmetic.
 - **An entry that names an unknown account stops the request with an error**, instead of
   being skipped. The ledger has none.
-- **`ledger.json` is the README's data with the journal entries sorted by date**, to make it
+- **`ledger.json` is the prompt's data with the journal entries sorted by date**, to make it
   easier to read. Nothing else was changed, and the code does not rely on the order.
 - **Not checked at load:** that each entry's debits equal its credits. All 25 do today.
 

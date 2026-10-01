@@ -2,8 +2,9 @@
 
 ## Requirements
 
-`README.md` is the take-home prompt and the source of truth for requirements. Accounting
-terms are defined in `ACCOUNTING_PRIMER.md`. Read both before changing behavior.
+`requirements/README.md` is the take-home prompt and the source of truth for requirements.
+Accounting terms are defined in `requirements/ACCOUNTING_PRIMER.md`. Read both before
+changing behavior. The `README.md` at the root is ours: how to run the app and the tests.
 
 A simple full-stack app: the backend reads a ledger (chart of accounts and journal entries)
 from a JSON file and returns an income statement for a date range; the frontend shows that
@@ -21,11 +22,13 @@ What shapes every decision:
 This is the target shape. Create files when a step needs them, not before.
 
 ```text
+requirements/   The take-home prompt and the accounting primer. Do not edit.
+README.md       How to run the backend, the frontend and the tests, with tool versions
 NOTES.md        Decisions, assumptions, Q1 2026 net income, how the numbers were checked
 backend/        Spring Boot, Java 21, Maven wrapper
                 controller → service → ledger loader, records for the ledger and the response
   src/main/resources/ledger.json
-                The data from the README. Same content, journal entries sorted by date.
+                The data from the prompt. Same content, journal entries sorted by date.
                 Code must not rely on that order.
 frontend/       React + Vite + TypeScript, npm
   src/
@@ -61,7 +64,7 @@ npm run lint
 
 ## Accounting rules
 
-These come from the README's data dictionary. The ledger contains entries that exist to
+These come from the prompt's data dictionary. The ledger contains entries that exist to
 test each one, so do not simplify them away.
 
 - **Status.** Only `posted` entries count. `draft` and `void` are excluded (JE-009, JE-019, JE-025).
@@ -98,14 +101,14 @@ test each one, so do not simplify them away.
 - Simple is enough. Do not over-engineer.
 - No new layer, library or abstraction unless a current requirement needs it.
 - No database, auth, caching, Docker or CI unless asked.
-- No features beyond the README's list.
+- No features beyond the prompt's list.
 
 ### Backend
 
 - Java 21. Use records for data and DTOs.
 - Structure is controller → service → ledger loader. Nothing more.
 - Constructor injection only, no field injection.
-- The endpoint is `GET /income-statement?start=YYYY-MM-DD&end=YYYY-MM-DD`, as the README specifies.
+- The endpoint is `GET /income-statement?start=YYYY-MM-DD&end=YYYY-MM-DD`, as the prompt specifies.
 - Money is `BigDecimal`, never `double` or `float`. Parse the ledger's `debit` and `credit`
   strings straight into `BigDecimal`. Amounts go out as strings with 2 decimals.
 - Dates are `LocalDate` in ISO format (`YYYY-MM-DD`).
@@ -148,7 +151,7 @@ test each one, so do not simplify them away.
 - The change was actually run and checked (curl for the API, browser for the page), not only compiled.
 - Report what was verified and what was not. Never claim something works without running it.
 - `NOTES.md` is updated if the step involved a decision or an assumption about the data.
-- The run instructions and tool versions for the submission are still correct.
+- The run instructions and tool versions in `README.md` are still correct.
 
 ### Workflow
 
