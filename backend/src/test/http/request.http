@@ -2,11 +2,71 @@
 ### Start the backend first: ./mvnw spring-boot:run
 @host = http://localhost:8080
 
-### Q1 2026: 200 with the statement
+### ---------- Whole periods ----------
+
+### Q1 2026, the figure reported in NOTES.md
+### Revenue 37850.50, COGS 14272.75, gross profit 23577.75,
+### operating expenses 68100.07, operating income -44522.32, other income 42.18,
+### net income -44480.14
 GET {{host}}/income-statement?start=2026-01-01&end=2026-03-31
 
-### Single day: 200, start and end may be the same date
+### January: net income -21529.65
+### Rent shows the full 9000.00 (JE-007, three months expensed when paid).
+### 6300 Marketing (legacy) shows 2500.10 although the account is inactive (JE-008).
+### The subscription billing of 12000.00 (JE-004) is balance sheet only and does not appear.
+GET {{host}}/income-statement?start=2026-01-01&end=2026-01-31
+
+### February: net income -13230.25
+### Product Revenue is 8200.00, not 16400.00: the duplicate JE-009 is void.
+### Sales Returns & Discounts is -650.25 inside Revenue (JE-012).
+GET {{host}}/income-statement?start=2026-02-01&end=2026-02-28
+
+### March: net income -9720.24
+### Salaries is 18500.00: the 5000.00 bonus JE-019 is a draft.
+### Software is 1099.97: 1199.97 less the 100.00 vendor credit (JE-020).
+### Interest Income 42.18 is under Other income, not Revenue.
+GET {{host}}/income-statement?start=2026-03-01&end=2026-03-31
+
+### Everything in the ledger: net income -30380.14 (5000.00 - 44480.14 + 9100.00)
+GET {{host}}/income-statement?start=2025-12-15&end=2026-04-01
+
+### ---------- Date boundaries ----------
+
+### Single day, 2026-03-31: net income -17457.82 (1000.00 - 18500.00 + 42.18)
+### Both ends are inclusive, so the three entries dated 03-31 appear.
 GET {{host}}/income-statement?start=2026-03-31&end=2026-03-31
+
+### Day before quarter end: all zeros, the 03-31 entries are out
+GET {{host}}/income-statement?start=2026-03-21&end=2026-03-30
+
+### December 2025: only JE-001, net income 5000.00
+GET {{host}}/income-statement?start=2025-12-01&end=2025-12-31
+
+### April 2026: only JE-024, net income 9100.00
+GET {{host}}/income-statement?start=2026-04-01&end=2026-04-30
+
+### ---------- Single entries ----------
+
+### 2026-03-02: three-line sale with discount (JE-016) and its COGS (JE-017)
+### Product Revenue 15000.00, Sales Returns & Discounts -150.00, COGS 6012.45
+GET {{host}}/income-statement?start=2026-03-02&end=2026-03-02
+
+### 2026-03-20: vendor credit alone (JE-020). Software -100.00, net income 100.00
+GET {{host}}/income-statement?start=2026-03-20&end=2026-03-20
+
+### ---------- No activity: 200 with empty sections and 0.00 totals ----------
+
+### 2026-03-15: only the draft bonus JE-019
+GET {{host}}/income-statement?start=2026-03-15&end=2026-03-15
+
+### 2026-03-18: only the void, balance-sheet-only JE-025
+GET {{host}}/income-statement?start=2026-03-18&end=2026-03-18
+
+### 2026-02-15: only a cash receipt (JE-013), balance sheet accounts
+GET {{host}}/income-statement?start=2026-02-15&end=2026-02-15
+
+### 2027: nothing in the ledger
+GET {{host}}/income-statement?start=2027-01-01&end=2027-12-31
 
 ### ---------- Invalid requests: each returns 400 with {"message": "..."} ----------
 

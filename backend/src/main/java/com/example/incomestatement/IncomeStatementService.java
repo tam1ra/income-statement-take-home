@@ -2,44 +2,115 @@ package com.example.incomestatement;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 import com.example.incomestatement.IncomeStatement.Line;
 import com.example.incomestatement.IncomeStatement.Section;
+import com.example.incomestatement.Ledger.Account;
+import com.example.incomestatement.Ledger.JournalEntry;
+import com.example.incomestatement.Ledger.JournalLine;
 
 @Service
 public class IncomeStatementService {
 
+	private static final BigDecimal ZERO = new BigDecimal("0.00");
+
+	private final Ledger ledger;
+	private final Map<String, Account> accountsByNumber = new HashMap<>();
+
+	public IncomeStatementService(LedgerLoader ledgerLoader) {
+		this.ledger = ledgerLoader.load();
+		for (Account account : ledger.accounts()) {
+			accountsByNumber.put(account.number(), account);
+		}
+	}
+
 	/**
-	 * PLACEHOLDER: returns made-up numbers so the response shape can be reviewed.
-	 * The ledger is not read yet and the dates do not change the amounts.
+	 * Builds the income statement for the entries dated from start to end, both inclusive.
 	 */
 	public IncomeStatement statement(LocalDate start, LocalDate end) {
-		Section revenue = new Section(
-				List.of(new Line("4000", "Product Revenue", new BigDecimal("1000.00"))),
-				new BigDecimal("1000.00"));
-		Section costOfGoodsSold = new Section(
-				List.of(new Line("5000", "Cost of Goods Sold", new BigDecimal("400.00"))),
-				new BigDecimal("400.00"));
-		Section operatingExpenses = new Section(
-				List.of(new Line("6000", "Salaries", new BigDecimal("250.00"))),
-				new BigDecimal("250.00"));
-		Section otherIncome = new Section(
-				List.of(new Line("7000", "Interest Income", new BigDecimal("50.00"))),
-				new BigDecimal("50.00"));
+		Map<String, BigDecimal> amounts = amountsByAccount(start, end);
+
+		Section revenue = section(amounts, "operating_revenue", "contra_revenue");
+		Section costOfGoodsSold = section(amounts, "cogs");
+		Section operatingExpenses = section(amounts, "operating_expense");
+		Section otherIncome = section(amounts, "other_income");
+
+		BigDecimal grossProfit = revenue.total().subtract(costOfGoodsSold.total());
+		BigDecimal operatingIncome = grossProfit.subtract(operatingExpenses.total());
+		BigDecimal netIncome = operatingIncome.add(otherIncome.total());
 
 		return new IncomeStatement(
 				start,
 				end,
 				revenue,
 				costOfGoodsSold,
-				new BigDecimal("600.00"),
+				grossProfit,
 				operatingExpenses,
-				new BigDecimal("350.00"),
+				operatingIncome,
 				otherIncome,
-				new BigDecimal("400.00"));
+				netIncome);
+	}
+
+	/**
+	 * Adds up the activity of each income statement account in the period. Only accounts
+	 * that have at least one posted line in the period get an entry in the map.
+	 */
+	private Map<String, BigDecimal> amountsByAccount(LocalDate start, LocalDate end) {
+		Map<String, BigDecimal> amounts = new HashMap<>();
+		for (JournalEntry entry : ledger.journalEntries()) {
+			if (!"posted".equals(entry.status())) {
+				continue; // draft and void entries are not in the books
+			}
+			if (entry.date().isBefore(start) || entry.date().isAfter(end)) {
+				continue;
+			}
+			for (JournalLine line : entry.lines()) {
+				Account account = accountsByNumber.get(line.account());
+				if (account == null) {
+					throw new IllegalStateException(
+							"Entry " + entry.id() + " uses unknown account " + line.account());
+				}
+				if ("balance_sheet".equals(account.subtype())) {
+					continue;
+				}
+				amounts.merge(account.number(), signedAmount(account, line), BigDecimal::add);
+			}
+		}
+		return amounts;
+	}
+
+	/**
+	 * Expenses grow with debits, so debit minus credit. Revenue grows with credits, so
+	 * credit minus debit. A sales return (a debit to a revenue account) comes out negative.
+	 */
+	private static BigDecimal signedAmount(Account account, JournalLine line) {
+		if ("expense".equals(account.type())) {
+			return line.debit().subtract(line.credit());
+		}
+		return line.credit().subtract(line.debit());
+	}
+
+	/**
+	 * One line per account of the given subtypes that had activity, in chart of accounts order.
+	 */
+	private Section section(Map<String, BigDecimal> amounts, String... subtypes) {
+		List<Line> lines = new ArrayList<>();
+		BigDecimal total = ZERO;
+		for (Account account : ledger.accounts()) {
+			BigDecimal amount = amounts.get(account.number());
+			if (amount == null || !List.of(subtypes).contains(account.subtype())) {
+				continue;
+			}
+			lines.add(new Line(account.number(), account.name(), amount));
+			total = total.add(amount);
+		}
+		return new Section(lines, total);
 	}
 
 }
