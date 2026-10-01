@@ -66,4 +66,12 @@
 
 ## With more time
 
-TODO
+- check that each entry balances when the ledger loads.** If an entry's debits do
+  not equal its credits, fail at startup with the entry id. One test with an unbalanced file.
+- take the company name and currency from the ledger.** Add them to the response
+  and show them on the page; the heading is hardcoded today.
+- quick period buttons.** January, February, March and Q1 2026 next to the date
+  inputs, each setting both dates and running the report.
+- show the entries behind a line.** A second endpoint returning the posted
+  entries for one account in the period (id, date, memo, amount), shown when an account
+  line is clicked, so an accountant can see where a number comes from.
