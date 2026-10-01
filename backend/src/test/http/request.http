@@ -1,0 +1,6 @@
+### Requests for the VS Code REST Client extension (humao.rest-client).
+### Start the backend first: ./mvnw spring-boot:run
+@host = http://localhost:8080
+
+### Hello: 200, "Hello from the backend."
+GET {{host}}/hello
