@@ -75,3 +75,6 @@
 - show the entries behind a line.** A second endpoint returning the posted
   entries for one account in the period (id, date, memo, amount), shown when an account
   line is clicked, so an accountant can see where a number comes from.
+- keep the dates in the page URL. Read `start` and `end` from the query string instead of
+  only holding them in component state, and update the URL when the report runs. A refresh
+  then keeps the same period, and a report can be shared as a link.
