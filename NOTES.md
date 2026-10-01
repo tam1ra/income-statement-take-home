@@ -51,7 +51,18 @@
 
 ## Where AI helped, and where it was wrong
 
-TODO
+### Where it helped
+
+- With everything, from writing `CLAUDE.md` to building the whole application.
+- I worked one step at a time, reviewed each step by hand before it was committed, and
+  fixed things along the way.
+
+### Where it was wrong
+
+- It assumed it should create a new branch for a commit, which I had not asked for. I moved
+  the commit back to `main` and added a rule to always commit there.
+- It loaded `ledger.json` through the class loader instead of using dependency injection.
+  I asked for another approach, and the file is now injected as a Spring `Resource`.
 
 ## With more time
 
