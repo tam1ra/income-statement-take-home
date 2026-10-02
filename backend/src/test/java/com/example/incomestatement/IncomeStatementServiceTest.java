@@ -1,6 +1,7 @@
 package com.example.incomestatement;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,7 +20,31 @@ import tools.jackson.databind.json.JsonMapper;
 class IncomeStatementServiceTest {
 
 	private final IncomeStatementService service = new IncomeStatementService(
-			new LedgerLoader(JsonMapper.builder().build(), new ClassPathResource("ledger.json")));
+			new LedgerLoader(JsonMapper.builder().build(), new ClassPathResource("ledger.json")),
+			new BankAccountLoader(JsonMapper.builder().build(), new ClassPathResource("bank.json"))
+	);
+
+	@Test
+	void checkNotMatchBalance() {
+//		assertThat(new IncomeStatementService(
+//				new LedgerLoader(JsonMapper.builder().build(), new ClassPathResource("ledger.json")),
+//				new BankAccountLoader(JsonMapper.builder().build(), new ClassPathResource("bank.json"))
+//		)).
+
+//		assertThat(new IncomeStatementService(
+//				new LedgerLoader(JsonMapper.builder().build(), new ClassPathResource("ledger.json")),
+//				new BankAccountLoader(JsonMapper.builder().build(), new ClassPathResource("bank.json"))
+//		) -> assertThatThrownBy() )
+
+		try {
+			var serviceTest =new IncomeStatementService(
+				new LedgerLoader(JsonMapper.builder().build(), new ClassPathResource("ledger.json")),
+				new BankAccountLoader(JsonMapper.builder().build(), new ClassPathResource("broken_bank.json"))
+			);
+		} catch (Exception ex) {
+			assertThat(ex).isInstanceOf(IllegalArgumentException.class);
+		}
+	}
 
 	// ---------- The whole quarter ----------
 

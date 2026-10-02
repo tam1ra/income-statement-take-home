@@ -21,12 +21,31 @@ public class IncomeStatementService {
 	private static final BigDecimal ZERO = new BigDecimal("0.00");
 
 	private final Ledger ledger;
+	private final BankAccount bankAccount;
 	private final Map<String, Account> accountsByNumber = new HashMap<>();
 
-	public IncomeStatementService(LedgerLoader ledgerLoader) {
+	public IncomeStatementService(LedgerLoader ledgerLoader, BankAccountLoader bankAccountLoader) {
 		this.ledger = ledgerLoader.load();
+		this.bankAccount = bankAccountLoader.load();
+
+		List<Account> cash = new ArrayList<>();
 		for (Account account : ledger.accounts()) {
 			accountsByNumber.put(account.number(), account);
+		}
+
+		boolean match = true;
+		for (var journal : ledger.journalEntries()) {
+			if (journal.status().equals("POSTED")) {
+				for (var line : journal.lines()) {
+					if (line.account() == "1000") {
+						for (var account : bankAccount.bankAccounts()) {
+							if (!line.debit().equals(account.amount()) && !line.credit().equals(account.amount())) {
+								throw new IllegalArgumentException("Cash is not match with bank balance");
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 

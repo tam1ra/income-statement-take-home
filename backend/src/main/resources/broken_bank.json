@@ -1,0 +1,11 @@
+{
+  "bankAccounts": [
+    {"id": "BT-01", "date": "2026-01-02", "amount": "-9001.00", "description": "ACH DEBIT LANDMARK PROPERTIES"},
+    {"id": "BT-02", "date": "2026-01-30", "amount": "-18500.00", "description": "GUSTO PAYROLL 013026"},
+    {"id": "BT-03", "date": "2026-02-18", "amount": "12450.75", "description": "DEPOSIT HARBOR CAFE"},
+    {"id": "BT-04", "date": "2026-02-27", "amount": "-18500.00", "description": "GUSTO PAYROLL 022726"},
+    {"id": "BT-05", "date": "2026-03-05", "amount": "-35.00", "description": "MONTHLY SERVICE FEE"},
+    {"id": "BT-06", "date": "2026-03-31", "amount": "-18500.00", "description": "GUSTO PAYROLL 033126"},
+    {"id": "BT-07", "date": "2026-03-31", "amount": "-18500.00", "description": "GUSTO PAYROLL 033126"}
+  ]
+}
